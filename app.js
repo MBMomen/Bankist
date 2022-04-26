@@ -9,12 +9,15 @@ const section1 = document.querySelector(`#section--1`);
 const navbar = document.querySelector(`.nav`);
 const links = navbar.querySelectorAll(`.nav__link`);
 const header = document.querySelector(`.header`);
+const tabContainer = document.querySelector(`.operations`);
+const tabBtns = document.querySelectorAll(`.operations__tab`);
+const tabsContent = document.querySelectorAll(`.operations__content`);
 
 const navbarHeight = navbar.getBoundingClientRect().height; // Calculating the nav height
 
 //////////////////////////////////////////////////
-// Implementing scrolling to view  >for the first
-// sectin only function
+// Implementing scrolling to view
+// >> for the first sectin only function
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 // Scrolling to the first section by pressing read more link/btn
 btnScrollTo.addEventListener(`click`, () =>
@@ -78,9 +81,28 @@ const headerObserver = new IntersectionObserver(stickyNavHandler, obsOptions);
 // Initilizing the observer with the header as a target element
 headerObserver.observe(header);
 
-///////////////////////////////////////
+//////////////////////////////////////////////////
+// Tab switch funcrionality
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
+
+//event o listen to the clicks in the tab buttons
+tabContainer.addEventListener(`click`, (e) => {
+  const target = e.target.closest(`.operations__tab`); //sepecifing the targeted button
+  if (!target) return; //Guerd clause to prevent the error when Target value is null
+  tabBtns.forEach((btn) => btn.classList.remove(`operations__tab--active`)); //looping over all buttons and remove the active class
+  target.classList.add(`operations__tab--active`); //adding the active class to the clicked button
+  tabsContent.forEach((content) =>
+    content.classList.remove(`operations__content--active`)
+  ); //looping over all contents and remove the active class
+  document
+    .querySelector(`.operations__content--${target.dataset.tab}`)
+    .classList.add(`operations__content--active`); //adding the active class to the content that corresponds to the clicked button
+});
+
+/////////////////////////////////////////////////
 // Modal window
 //Create account modal pop up
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
 //open modal
 const openModal = function () {
