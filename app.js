@@ -13,9 +13,9 @@ const tabContainer = document.querySelector(`.operations`);
 const tabBtns = document.querySelectorAll(`.operations__tab`);
 const tabsContent = document.querySelectorAll(`.operations__content`);
 const sections = document.querySelectorAll(`.section`);
+const sourceImgs = document.querySelectorAll(`img[data-src]`);
 
-const navbarHeight = navbar.getBoundingClientRect().height; // Calculating the nav height
-
+console.log(sourceImgs);
 //////////////////////////////////////////////////
 // Implementing scrolling to view
 // >> for the first sectin only function
@@ -67,6 +67,8 @@ const stickyNavHandler = function (entries) {
   if (!entry.isIntersecting) navbar.classList.add(`sticky`);
   else navbar.classList.remove(`sticky`);
 };
+
+const navbarHeight = navbar.getBoundingClientRect().height; // Calculating the nav height
 
 // The observer options
 const obsOptions = {
@@ -130,6 +132,25 @@ sections.forEach((section) => {
   sectionsObserver.observe(section); // Calling the observer in to each section
   section.classList.add(`section--hidden`); //adding the hiding class dynamically
 });
+
+//////////////////////////////////////////////////
+// Lazy loading images funcrionality
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
+// The observer callback function to load images
+const loadImgs = (entries, observer) => {
+  const [entry] = entries; //getting the observer data
+  if (!entry.isIntersecting) return;
+  entry.target.src = entry.target.dataset.src; //Switching the small image with the source (original size image)
+  entry.target.addEventListener(
+    `load`,
+    (e) => entry.target.classList.remove(`lazy-img`) // REmoving the blur filter after fully loading the image
+  );
+  observer.unobserve(entry.target); //stoping the observer after loading all images
+};
+const obsLoadOptions = { root: null, threshold: 0, rootMargin: `200px` }; // Observer Properties
+const imgsOpserver = new IntersectionObserver(loadImgs, obsLoadOptions); //creating the observer
+
+sourceImgs.forEach((image) => imgsOpserver.observe(image)); //calling the observer on each image
 
 /////////////////////////////////////////////////
 // Modal window
