@@ -89,7 +89,7 @@ const headerObserver = new IntersectionObserver(stickyNavHandler, obsOptions);
 headerObserver.observe(header);
 
 //////////////////////////////////////////////////
-// Tab switch funcrionality
+// Tab switch functionality
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 
 //event o listen to the clicks in the tab buttons
@@ -107,7 +107,7 @@ tabContainer.addEventListener(`click`, (e) => {
 });
 
 //////////////////////////////////////////////////
-// Reveal Section while scrolling funcrionality
+// Reveal Section while scrolling functionality
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 //Revealing the section handler as a callback
 //function for the observer
@@ -138,7 +138,7 @@ sections.forEach((section) => {
 });
 
 //////////////////////////////////////////////////
-// Lazy loading images funcrionality
+// Lazy loading images functionality
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
 // The observer callback function to load images
 const loadImgs = (entries, observer) => {
@@ -157,34 +157,46 @@ const imgsOpserver = new IntersectionObserver(loadImgs, obsLoadOptions); //creat
 sourceImgs.forEach((image) => imgsOpserver.observe(image)); //calling the observer on each image
 
 //////////////////////////////////////////////////
-// Images slider funcrionality
+// Images slider functionality
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-let curSlide = 0;
-const maxSlide = slides.length - 1;
+let curSlide = 0; // To set the current Active slide
+const maxSlide = slides.length - 1; // Getting the slide Num
+
+// It show the slide that should be active
 const gotoSlide = function (slideNum) {
   slides.forEach(
     (slide, i) =>
       (slide.style.transform = `translateX(${100 * (i - slideNum)}%)`)
   );
 };
-gotoSlide(0);
+gotoSlide(0); // Setting the frist slide on the first load of the page
 
+// Activate the next slide
 const nextSlide = function () {
-  if (curSlide === maxSlide) curSlide = 0;
-  else curSlide++;
+  if (curSlide === maxSlide)
+    curSlide = 0; // Reseting the slide to the frist when reaching to the last one
+  else curSlide++; // Moving to the next slide
 
-  gotoSlide(curSlide);
-  activateDot(curSlide);
+  gotoSlide(curSlide); // Showing\calling the next slide
+  activateDot(curSlide); // Sitting the corresponding dot to the active silide
 };
+
+// Activate the Previous Slide
 const previousSlide = function () {
   if (curSlide === 0) curSlide = maxSlide;
-  else curSlide--;
-  gotoSlide(curSlide);
-  activateDot(curSlide);
+  //Going back to the last slide when reaching the frist one
+  else curSlide--; // Moving to the Previous slide
+  gotoSlide(curSlide); // Showing\calling the previous slide
+  activateDot(curSlide); // Sitting the corresponding dot to the active silide
 };
+
+// Getting the next slide by clicking the right button element
 sliderBtnR.addEventListener(`click`, nextSlide);
+
+// Getting the previous slide by clicking the left button element
 sliderBtnL.addEventListener(`click`, previousSlide);
 
+// Creating the slide indicating dots
 const createDots = function () {
   slides.forEach((_, i) =>
     dotContainer.insertAdjacentHTML(
@@ -194,23 +206,24 @@ const createDots = function () {
   );
 };
 
-createDots();
+createDots(); // Calling the fun to create the dots
+
+// Activating the corresponding dot
 const activateDot = (slide) => {
   document
     .querySelectorAll(`.dots__dot`)
-    .forEach((dot) => dot.classList.remove(`dots__dot--active`));
-  console.log(document.querySelector(`.dots__dot[data-slide = "${slide}"]`));
+    .forEach((dot) => dot.classList.remove(`dots__dot--active`)); // Remove the active class from all the dots
   document
     .querySelector(`.dots__dot[data-slide = "${slide}"]`)
-    .classList.add(`dots__dot--active`);
+    .classList.add(`dots__dot--active`); // Activating the dot that corresponds to the active slide
 };
 
-activateDot(0);
+activateDot(0); // Setting the active dot to the first slide when first load the page
 
+// Activating the slide by clicking the dot that coresponds to it
 dotContainer.addEventListener(`click`, (e) => {
   if (e.target.classList.contains(`dots__dot`)) {
     const { slide } = e.target.dataset;
-    console.log(slide);
     gotoSlide(slide);
     activateDot(slide);
   }
