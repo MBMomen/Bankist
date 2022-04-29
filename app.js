@@ -162,6 +162,12 @@ sourceImgs.forEach((image) => imgsOpserver.observe(image)); //calling the observ
 let curSlide = 0; // To set the current Active slide
 const maxSlide = slides.length - 1; // Getting the slide Num
 
+const initSlider = function () {
+  gotoSlide(0); // Setting the frist slide on the first load of the page
+  createDots(); // Calling the fun to create the dots
+  activateDot(0); // Setting the active dot to the first slide when first load the page
+};
+
 // It show the slide that should be active
 const gotoSlide = function (slideNum) {
   slides.forEach(
@@ -169,7 +175,6 @@ const gotoSlide = function (slideNum) {
       (slide.style.transform = `translateX(${100 * (i - slideNum)}%)`)
   );
 };
-gotoSlide(0); // Setting the frist slide on the first load of the page
 
 // Activate the next slide
 const nextSlide = function () {
@@ -206,8 +211,6 @@ const createDots = function () {
   );
 };
 
-createDots(); // Calling the fun to create the dots
-
 // Activating the corresponding dot
 const activateDot = (slide) => {
   document
@@ -217,8 +220,6 @@ const activateDot = (slide) => {
     .querySelector(`.dots__dot[data-slide = "${slide}"]`)
     .classList.add(`dots__dot--active`); // Activating the dot that corresponds to the active slide
 };
-
-activateDot(0); // Setting the active dot to the first slide when first load the page
 
 // Activating the slide by clicking the dot that coresponds to it
 dotContainer.addEventListener(`click`, (e) => {
