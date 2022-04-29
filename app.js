@@ -14,8 +14,12 @@ const tabBtns = document.querySelectorAll(`.operations__tab`);
 const tabsContent = document.querySelectorAll(`.operations__content`);
 const sections = document.querySelectorAll(`.section`);
 const sourceImgs = document.querySelectorAll(`img[data-src]`);
+const slider = document.querySelector(`.slider`);
+const slides = document.querySelectorAll(`.slide`);
+const sliderBtnR = document.querySelector(`.slider__btn--right`);
+const sliderBtnL = document.querySelector(`.slider__btn--left`);
+const dotContainer = document.querySelector(`.dots`);
 
-console.log(sourceImgs);
 //////////////////////////////////////////////////
 // Implementing scrolling to view
 // >> for the first sectin only function
@@ -151,6 +155,66 @@ const obsLoadOptions = { root: null, threshold: 0, rootMargin: `200px` }; // Obs
 const imgsOpserver = new IntersectionObserver(loadImgs, obsLoadOptions); //creating the observer
 
 sourceImgs.forEach((image) => imgsOpserver.observe(image)); //calling the observer on each image
+
+//////////////////////////////////////////////////
+// Images slider funcrionality
+//-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
+let curSlide = 0;
+const maxSlide = slides.length - 1;
+const gotoSlide = function (slideNum) {
+  slides.forEach(
+    (slide, i) =>
+      (slide.style.transform = `translateX(${100 * (i - slideNum)}%)`)
+  );
+};
+gotoSlide(0);
+
+const nextSlide = function () {
+  if (curSlide === maxSlide) curSlide = 0;
+  else curSlide++;
+
+  gotoSlide(curSlide);
+  activateDot(curSlide);
+};
+const previousSlide = function () {
+  if (curSlide === 0) curSlide = maxSlide;
+  else curSlide--;
+  gotoSlide(curSlide);
+  activateDot(curSlide);
+};
+sliderBtnR.addEventListener(`click`, nextSlide);
+sliderBtnL.addEventListener(`click`, previousSlide);
+
+const createDots = function () {
+  slides.forEach((_, i) =>
+    dotContainer.insertAdjacentHTML(
+      `beforeend`,
+      `<button class="dots__dot" data-slide="${i}"></button>`
+    )
+  );
+};
+
+createDots();
+const activateDot = (slide) => {
+  document
+    .querySelectorAll(`.dots__dot`)
+    .forEach((dot) => dot.classList.remove(`dots__dot--active`));
+  console.log(document.querySelector(`.dots__dot[data-slide = "${slide}"]`));
+  document
+    .querySelector(`.dots__dot[data-slide = "${slide}"]`)
+    .classList.add(`dots__dot--active`);
+};
+
+activateDot(0);
+
+dotContainer.addEventListener(`click`, (e) => {
+  if (e.target.classList.contains(`dots__dot`)) {
+    const { slide } = e.target.dataset;
+    console.log(slide);
+    gotoSlide(slide);
+    activateDot(slide);
+  }
+});
 
 /////////////////////////////////////////////////
 // Modal window
