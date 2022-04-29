@@ -14,7 +14,6 @@ const tabBtns = document.querySelectorAll(`.operations__tab`);
 const tabsContent = document.querySelectorAll(`.operations__content`);
 const sections = document.querySelectorAll(`.section`);
 const sourceImgs = document.querySelectorAll(`img[data-src]`);
-const slider = document.querySelector(`.slider`);
 const slides = document.querySelectorAll(`.slide`);
 const sliderBtnR = document.querySelector(`.slider__btn--right`);
 const sliderBtnL = document.querySelector(`.slider__btn--left`);
@@ -159,80 +158,82 @@ sourceImgs.forEach((image) => imgsOpserver.observe(image)); //calling the observ
 //////////////////////////////////////////////////
 // Images slider functionality
 //-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-//
-let curSlide = 0; // To set the current Active slide
-const maxSlide = slides.length - 1; // Getting the slide Num
+// Potting all the slide cod into one function and calling it just one time that way we are not polluting the global space
+function slider() {
+  let curSlide = 0; // To set the current Active slide
+  const maxSlide = slides.length - 1; // Getting the slide Num
 
-// Setting the slider in first load the page
-const initSlider = function () {
-  gotoSlide(0); // Setting the frist slide on the first load of the page
-  createDots(); // Calling the fun to create the dots
-  activateDot(0); // Setting the active dot to the first slide when first load the page
-};
+  // Creating the slide indicating dots
+  const createDots = function () {
+    slides.forEach((_, i) =>
+      dotContainer.insertAdjacentHTML(
+        `beforeend`,
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      )
+    );
+  };
 
-// It show the slide that should be active
-const gotoSlide = function (slideNum) {
-  slides.forEach(
-    (slide, i) =>
-      (slide.style.transform = `translateX(${100 * (i - slideNum)}%)`)
-  );
-};
+  // Activating the corresponding dot
+  const activateDot = (slide) => {
+    document
+      .querySelectorAll(`.dots__dot`)
+      .forEach((dot) => dot.classList.remove(`dots__dot--active`)); // Remove the active class from all the dots
 
-// Activate the next slide
-const nextSlide = function () {
-  if (curSlide === maxSlide)
-    curSlide = 0; // Reseting the slide to the frist when reaching to the last one
-  else curSlide++; // Moving to the next slide
+    document
+      .querySelector(`.dots__dot[data-slide = "${slide}"]`)
+      .classList.add(`dots__dot--active`); // Activating the dot that corresponds to the active slide
+  };
 
-  gotoSlide(curSlide); // Showing\calling the next slide
-  activateDot(curSlide); // Sitting the corresponding dot to the active silide
-};
+  // It show the slide that should be active
+  const gotoSlide = function (slideNum) {
+    slides.forEach(
+      (slide, i) =>
+        (slide.style.transform = `translateX(${100 * (i - slideNum)}%)`)
+    );
+    activateDot(slideNum); // Sitting the corresponding dot to the active slide
+  };
 
-// Activate the Previous Slide
-const previousSlide = function () {
-  if (curSlide === 0) curSlide = maxSlide;
-  //Going back to the last slide when reaching the frist one
-  else curSlide--; // Moving to the Previous slide
-  gotoSlide(curSlide); // Showing\calling the previous slide
-  activateDot(curSlide); // Sitting the corresponding dot to the active silide
-};
+  // Setting the slider in first load the page
+  const initSlider = function () {
+    createDots(); // Calling the fun to create the dots
+    gotoSlide(0); // Setting the frist slide on the first load of the page
+  };
 
-// Getting the next slide by clicking the right button element
-sliderBtnR.addEventListener(`click`, nextSlide);
+  initSlider(); // Slider first load
 
-// Getting the previous slide by clicking the left button element
-sliderBtnL.addEventListener(`click`, previousSlide);
+  // Activate the next slide
+  const nextSlide = function () {
+    if (curSlide === maxSlide)
+      curSlide = 0; // Reseting the slide to the frist when reaching to the last one
+    else curSlide++; // Moving to the next slide
 
-// Creating the slide indicating dots
-const createDots = function () {
-  slides.forEach((_, i) =>
-    dotContainer.insertAdjacentHTML(
-      `beforeend`,
-      `<button class="dots__dot" data-slide="${i}"></button>`
-    )
-  );
-};
+    gotoSlide(curSlide); // Showing\calling the next slide
+  };
 
-// Activating the corresponding dot
-const activateDot = (slide) => {
-  document
-    .querySelectorAll(`.dots__dot`)
-    .forEach((dot) => dot.classList.remove(`dots__dot--active`)); // Remove the active class from all the dots
-  document
-    .querySelector(`.dots__dot[data-slide = "${slide}"]`)
-    .classList.add(`dots__dot--active`); // Activating the dot that corresponds to the active slide
-};
+  // Activate the Previous Slide
+  const previousSlide = function () {
+    if (curSlide === 0) curSlide = maxSlide;
+    //Going back to the last slide when reaching the frist one
+    else curSlide--; // Moving to the Previous slide
+    gotoSlide(curSlide); // Showing\calling the previous slide
+  };
 
-// Activating the slide by clicking the dot that coresponds to it
-dotContainer.addEventListener(`click`, (e) => {
-  if (e.target.classList.contains(`dots__dot`)) {
-    const { slide } = e.target.dataset;
-    gotoSlide(slide);
-    activateDot(slide);
-  }
-});
+  // Getting the next slide by clicking the right button element
+  sliderBtnR.addEventListener(`click`, nextSlide);
 
-initSlider(); // Slider first load
+  // Getting the previous slide by clicking the left button element
+  sliderBtnL.addEventListener(`click`, previousSlide);
 
+  // Activating the slide by clicking the dot that coresponds to it
+  dotContainer.addEventListener(`click`, (e) => {
+    if (e.target.classList.contains(`dots__dot`)) {
+      const { slide } = e.target.dataset;
+      gotoSlide(slide);
+    }
+  });
+}
+
+slider(); // Calling the slider Functionality that way we only call one function for the slider in the global space
 /////////////////////////////////////////////////
 // Modal window
 //Create account modal pop up
