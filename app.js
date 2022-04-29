@@ -162,6 +162,7 @@ sourceImgs.forEach((image) => imgsOpserver.observe(image)); //calling the observ
 let curSlide = 0; // To set the current Active slide
 const maxSlide = slides.length - 1; // Getting the slide Num
 
+// Setting the slider in first load the page
 const initSlider = function () {
   gotoSlide(0); // Setting the frist slide on the first load of the page
   createDots(); // Calling the fun to create the dots
@@ -229,6 +230,8 @@ dotContainer.addEventListener(`click`, (e) => {
     activateDot(slide);
   }
 });
+
+initSlider(); // Slider first load
 
 /////////////////////////////////////////////////
 // Modal window
